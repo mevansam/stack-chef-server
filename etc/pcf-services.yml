@@ -1,0 +1,43 @@
+---
+# Externalized environment configuration for Chef 'pcfservices' environment.
+
+domain: pcf-services.com
+
+services:
+  aws:
+    aws_key: "<<AWS_ACCESS_KEY_ID$AWS Access Key ID: "
+    aws_secret: "<<AWS_SECRET_ACCESS_KEY*AWS Secret Access Key: "
+
+    # Instance specific
+    key_pair: pcf-services
+    security_group: chef-server
+
+    # US East (N. Virginia)
+    region_us_1:
+      name: us-east-1
+      # Availability Zones
+      zone1: us-east-1b
+      zone2: us-east-1c
+      zone3: us-east-1d
+      zone4: us-east-1e
+      # Ubuntu Server 12.04
+      ami: ami-cc5be9a4
+
+    # US West (N. California)
+    region_us_2:
+      name: us-west-1
+      # Availability Zone
+      zone1: us-west-1a
+      zone2: us-west-1b
+      # Ubuntu Server 12.04
+      ami: ami-65bab120
+
+     # US West (Oregon)
+    region_us_3:
+      name: us-west-2
+      # Availability Zone
+      zone1: us-west-2a
+      zone2: us-west-2b
+      zone4: us-west-2c
+      # Ubuntu Server 12.04
+      ami: ami-7d69244d

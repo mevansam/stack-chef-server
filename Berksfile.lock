@@ -1,0 +1,42 @@
+DEPENDENCIES
+  chef-client (~> 4.0.0)
+  chef-server (~> 2.1.6)
+  cron (>= 1.2.0)
+  logrotate (>= 1.2.0)
+  network
+    path: ../../../openstack/chef/network
+  ohai (~> 2.0.1)
+  sysutils
+    path: ../../../openstack/chef/sysutils
+  windows (~> 1.11)
+
+GRAPH
+  apt (2.4.0)
+  chef-client (4.0.0)
+    cron (>= 1.2.0)
+    logrotate (>= 1.2.0)
+    windows (~> 1.11)
+  chef-server (2.1.6)
+  chef_handler (1.1.6)
+  cron (1.6.1)
+  hostsfile (2.4.5)
+  logrotate (1.7.0)
+  modules (0.2.0)
+  network (0.1.0)
+    hostsfile (~> 2.4.5)
+    network_interfaces (~> 1.0.0)
+    sysutils (>= 0.0.0)
+  network_interfaces (1.0.0)
+    modules (>= 0.1.2)
+  ohai (2.0.1)
+  sudo (2.6.0)
+  sysutils (1.0.0)
+    apt (= 2.4.0)
+    cron (>= 1.2.0)
+    hostsfile (~> 2.4.5)
+    modules (>= 0.1.2)
+    sudo (= 2.6.0)
+    yum (= 3.2.2)
+  windows (1.36.1)
+    chef_handler (>= 0.0.0)
+  yum (3.2.2)

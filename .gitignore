@@ -1,0 +1,17 @@
+.DS_Store
+.rnd
+.envrc
+.git
+.chef
+.localca
+.certs
+.project
+.idea/
+.logs/
+.run/
+.build/
+tmp/
+target
+*.swp
+
+openstack-cli/

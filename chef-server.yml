@@ -1,0 +1,54 @@
+# Stack
+name: chef-server
+
+chef:
+  knife_config:
+    aws_access_key_id: "#{env['services']['aws']['aws_key']}"
+    aws_secret_access_key: "#{env['services']['aws']['aws_secret']}"
+    aws_ssh_key_id: "#{env['services']['aws']['key_pair']}"
+    region: "#{env['services']['aws']['region_us_1']['name']}"
+    image: "#{env['services']['aws']['region_us_1']['ami']}"
+
+ssh_options: &ssh_options
+  identity_file: "#{Dir.home}/.ssh/#{env['services']['aws']['key_pair']}.pem"
+  host_key_verify: false
+  ip_attribute: ec2.public_ipv4
+  ssh_user: ubuntu
+  ssh_port: 22
+  sudo: true
+
+stack:
+
+- node: chef
+  attributes:
+    env:
+      alias: "openstack-chef.#{env['domain']}"
+      cron_jobs:
+        # Run chef client on reboot
+        chef_client:
+          predefined_value: "@reboot"
+          command: "/usr/bin/chef-client -L /var/log/chef/client.log"
+          user: root
+    chef_client:
+      init_style: upstart
+  knife:
+    options: *ssh_options
+    create:
+      class: Chef::Knife::Ec2ServerCreate
+      name_key: chef_node_name
+      options:
+        flavor: m1.large
+        ebs_size: 100
+        availability_zone: "#{env['services']['aws']['region_us_1']['zone1']}"
+        security_groups: 
+        - "#{env['services']['aws']['security_group']}"
+        run_list:
+        - recipe[sysutils]
+    delete:
+      class: Chef::Knife::Ec2ServerDelete
+      name_key: chef_node_name
+  run_list:
+  - recipe[sysutils]
+  - recipe[network]
+  - recipe[chef-client]
+  - recipe[chef-server]
