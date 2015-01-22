@@ -1,0 +1,66 @@
+# Stack
+name: chef-server
+
+chef:
+  knife_config:
+    vsphere_host: "#{env['services']['vsphere']['vsphere_host']}"
+    vsphere_dc: "#{env['services']['vsphere']['vsphere_dc']}"
+    vsphere_user: "#{env['services']['vsphere']['vsphere_user']}"
+    vsphere_pass: "#{env['services']['vsphere']['vsphere_pass']}"
+    vsphere_insecure: true
+
+ssh_options: &ssh_options
+  identity_file: "#{Dir.home}/.ssh/#{env['services']['vsphere']['ubuntu']['ssh_key_file']}.pem"
+  host_key_verify: false
+  ssh_user: ubuntu
+  ssh_port: 22
+  sudo: true
+
+stack:
+
+- node: chef
+  attributes:
+    env:
+      alias: "openstack-pivotech-chef.#{env['domain']}"
+      network_interfaces:
+      # - device: eth0
+      #   target:
+      #   mask:
+      #   gateway:
+      #   broadcast:
+      cron_jobs:
+        # Run chef client on reboot
+        chef_client:
+          predefined_value: "@reboot"
+          command: "/usr/bin/chef-client -L /var/log/chef/client.log"
+          user: root
+    chef_client:
+      init_style: upstart
+  knife:
+    options: *ssh_options
+    create:
+      class: Chef::Knife::VsphereVmClone
+      options:
+        source_vm: "#{env['services']['vsphere']['ubuntu']['vm_template']}"
+        dest_folder: "#{env['services']['vsphere']['ubuntu']['vm_folder']}"
+        datastore: "#{env['services']['vsphere']['ubuntu']['vm_datastore']}"
+        customization_domain: "#{env['domain']}"
+        customization_vlan: VM Network
+        customization_ips: 10.103.43.4/23
+        customization_gw: 10.103.42.1
+        customization_dns_ips: 10.103.42.135
+        customization_dns_suffixes: fe.gopivotal.com
+        customization_cpucount: 2
+        customization_memory: 8
+        # disable_customization: true
+        power: true
+        distro: chef-full
+        bootstrap: true
+        run_list: recipe[sysutils]
+    delete:
+      class: Chef::Knife::VsphereVmDelete
+  run_list:
+  - recipe[sysutils]
+  - recipe[network]
+  - recipe[chef-client]
+  - recipe[chef-server]

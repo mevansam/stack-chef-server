@@ -5,8 +5,8 @@ domain: pcf-services.com
 
 services:
   aws:
-    aws_key: "<<AWS_ACCESS_KEY_ID$AWS Access Key ID: "
-    aws_secret: "<<AWS_SECRET_ACCESS_KEY*AWS Secret Access Key: "
+    aws_key: "#{ENV['AWS_ACCESS_KEY_ID'] || ''}"
+    aws_secret: "#{ENV['AWS_SECRET_ACCESS_KEY'] || ''}"
 
     # Instance specific
     key_pair: pcf-services
@@ -41,3 +41,16 @@ services:
       zone4: us-west-2c
       # Ubuntu Server 12.04
       ami: ami-7d69244d
+
+  vsphere:
+    vsphere_host: "#{ENV['VSPHERE_HOST'] || ''}"
+    vsphere_dc: "#{ENV['VSPHERE_DC'] || ''}"
+    vsphere_user: "#{ENV['VSPHERE_USER'] || ''}"
+    vsphere_pass: "#{ENV['VSPHERE_PASS'] || ''}"
+
+    ubuntu:
+      # VM attributes
+      ssh_key_file: "#{ENV['VSPHERE_SSH_KEY_NAME'] || ''}"
+      vm_template: "#{ENV['VSPHERE_VM_TEMPLATE'] || ''}"
+      vm_folder: "#{ENV['VSPHERE_VM_FOLDER'] || ''}"
+      vm_datastore: "#{ENV['VSPHERE_VM_DATASTORE'] || ''}"
